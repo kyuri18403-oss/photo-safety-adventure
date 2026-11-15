@@ -93,7 +93,7 @@ function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){al
     if(['ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'].includes(ini)&&p==='i')p='';
     const fin=finals[p];
     if(fin===undefined)return '';
-    return ini+fin+tone;
+    return tone==='˙'?'˙'+ini+fin:ini+fin+tone;
   }
   function decorateTextNode(node){
     const text=node.nodeValue;
