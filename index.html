@@ -17,6 +17,15 @@ input,select{font:inherit;border:2px solid #e4e7ec;border-radius:12px;padding:10
 .choice{display:block;width:100%;text-align:left;background:#f7f7ff;box-shadow:none;border:2px solid #e8e5fa;margin:10px 0;padding:16px;line-height:1.55}.choice:hover{background:#eff8ff;border-color:#9edcf4}
 .feedback{border-radius:18px;padding:16px;background:#f0faef;margin-top:14px;line-height:1.7}.hidden{display:none!important}.tag{display:inline-block;background:#fff0c7;border-radius:9px;padding:4px 9px;font-size:.88rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.stat{background:#f6f4ff;padding:14px;border-radius:16px}.small{font-size:.9rem;color:#667085}.bopomofo{display:inline-block;writing-mode:vertical-rl;line-height:1.6;letter-spacing:.06em;background:#fff8df;border-radius:12px;padding:7px;margin:3px}.footer{text-align:center;color:#98a2b3;font-size:.82rem;padding:20px}
 </style>
+<style>
+/* 逐字注音：字在左、直式注音在右，聲調獨立靠右 */
+.zhuyin-wrap{display:inline-flex;align-items:center;vertical-align:middle;white-space:nowrap;gap:1px;margin:0 .015em}
+.zhuyin-base{display:inline-block;line-height:1.25}
+.zhuyin-reading{display:inline-flex;align-items:center;position:relative;writing-mode:vertical-rl;text-orientation:upright;font-size:.48em;line-height:1;letter-spacing:0;min-height:2.2em;color:#65529a}
+.zhuyin-tone{font-family:serif;font-size:.78em;line-height:1;writing-mode:horizontal-tb;align-self:flex-start;margin-left:-.1em;color:#65529a}
+.zhuyin-wrap ruby,.zhuyin-wrap rt{display:none}
+@media(max-width:600px){.zhuyin-reading{font-size:.44em;min-height:2em}}
+</style>
 </head>
 <body><main>
 <div class="top"><div><div class="tag">🛡️ 數位安全小學堂</div><h1>🐾 網路探險隊：照片守護大作戰</h1><div class="sub">一起練習保護照片、尊重彼此，成為網路安全小尖兵！</div></div><div class="pill" id="stagePill">準備出發</div></div>
@@ -60,4 +69,75 @@ function showTeacher(){$('finish').classList.add('hidden');$('teacher').classLis
 function hideTeacher(){$('teacher').classList.add('hidden');$('finish').classList.remove('hidden')}
 function downloadCSV(){const rows=[['關卡','選擇題序','結果','安全主題'],...history.map(h=>[h.level,h.choice+1,h.correct?'答對':'再練習',h.topic])];const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='照片守護大作戰_匿名學習紀錄.csv';a.click();URL.revokeObjectURL(a.href)}
 function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){alert('此瀏覽器目前不支援語音播放');return}speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(x.title+'。'+x.story+'。'+x.q))}
-</script></body></html>
+</script>
+<script src="https://unpkg.com/pinyin-pro@3.29.5/dist/index.js"></script>
+<script>
+(function(){
+  const isHan = /^[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff]$/;
+  const initials = [['zh','ㄓ'],['ch','ㄔ'],['sh','ㄕ'],['b','ㄅ'],['p','ㄆ'],['m','ㄇ'],['f','ㄈ'],['d','ㄉ'],['t','ㄊ'],['n','ㄋ'],['l','ㄌ'],['g','ㄍ'],['k','ㄎ'],['h','ㄏ'],['j','ㄐ'],['q','ㄑ'],['x','ㄒ'],['r','ㄖ'],['z','ㄗ'],['c','ㄘ'],['s','ㄙ']];
+  const finals={a:'ㄚ',o:'ㄛ',e:'ㄜ',ê:'ㄝ',ai:'ㄞ',ei:'ㄟ',ao:'ㄠ',ou:'ㄡ',an:'ㄢ',en:'ㄣ',ang:'ㄤ',eng:'ㄥ',er:'ㄦ',i:'ㄧ',ia:'ㄧㄚ',ie:'ㄧㄝ',iao:'ㄧㄠ',iu:'ㄧㄡ',ian:'ㄧㄢ',in:'ㄧㄣ',iang:'ㄧㄤ',ing:'ㄧㄥ',iong:'ㄩㄥ',u:'ㄨ',ua:'ㄨㄚ',uo:'ㄨㄛ',uai:'ㄨㄞ',ui:'ㄨㄟ',uan:'ㄨㄢ',un:'ㄨㄣ',uang:'ㄨㄤ',ong:'ㄨㄥ','ü':'ㄩ','üe':'ㄩㄝ','üan':'ㄩㄢ','ün':'ㄩㄣ'};
+  function toZhuyin(s){
+    if(!s || !/[a-zü]/i.test(s)) return '';
+    let tone='', p=s.toLowerCase();
+    const marks={'ā':'a','á':'a','ǎ':'a','à':'a','ē':'e','é':'e','ě':'e','è':'e','ī':'i','í':'i','ǐ':'i','ì':'i','ō':'o','ó':'o','ǒ':'o','ò':'o','ū':'u','ú':'u','ǔ':'u','ù':'u','ǖ':'ü','ǘ':'ü','ǚ':'ü','ǜ':'ü'};
+    const toneMarks={'ā':'','ē':'','ī':'','ō':'','ū':'','ǖ':'','á':'ˊ','é':'ˊ','í':'ˊ','ó':'ˊ','ú':'ˊ','ǘ':'ˊ','ǎ':'ˇ','ě':'ˇ','ǐ':'ˇ','ǒ':'ˇ','ǔ':'ˇ','ǚ':'ˇ','à':'ˋ','è':'ˋ','ì':'ˋ','ò':'ˋ','ù':'ˋ','ǜ':'ˋ'};
+    for(const c of p){if(toneMarks[c]!==undefined){tone=toneMarks[c];break}}
+    p=[...p].map(c=>marks[c]||c).join('');
+    if(p==='yi')p='i'; else if(p==='wu')p='u'; else if(p==='yu')p='ü';
+    else if(p.startsWith('y'))p=({ya:'ia',ye:'ie',yao:'iao',you:'iu',yan:'ian',yin:'in',yang:'iang',ying:'ing',yong:'iong',yue:'üe',yuan:'üan',yun:'ün'}[p]||p.slice(1));
+    else if(p.startsWith('w'))p=({wa:'ua',wo:'uo',wai:'uai',wei:'ui',wan:'uan',wen:'un',wang:'uang',weng:'ong'}[p]||p.slice(1));
+    let ini='';
+    for(const [k,v] of initials){if(p.startsWith(k)){ini=v;p=p.slice(k.length);break}}
+    if(['ㄐ','ㄑ','ㄒ'].includes(ini)&&p.startsWith('u'))p='ü'+p.slice(1);
+    if(['ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'].includes(ini)&&p==='i')p='';
+    const fin=finals[p];
+    if(fin===undefined)return '';
+    return ini+fin+tone;
+  }
+  function decorateTextNode(node){
+    const text=node.nodeValue;
+    if(!text || !/[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff]/.test(text))return;
+    const api=window.pinyinPro;
+    if(!api || typeof api.pinyin!=='function')return;
+    let syllables;
+    try{syllables=api.pinyin(text,{type:'array',toneType:'symbol',toneSandhi:true,traditional:true})}catch(e){return}
+    const chars=Array.from(text), frag=document.createDocumentFragment();
+    chars.forEach((ch,i)=>{
+      if(!isHan.test(ch)){frag.appendChild(document.createTextNode(ch));return}
+      const zh=toZhuyin(syllables[i]||'');
+      if(!zh){frag.appendChild(document.createTextNode(ch));return}
+      const toneMatch=zh.match(/[ˊˇˋ]$/), neutral=zh.startsWith('˙');
+      const tone=toneMatch?toneMatch[0]:(neutral?'˙':'');
+      const symbols=zh.replace(/[ˊˇˋ]/g,'').replace(/^˙/,'');
+      const wrap=document.createElement('span');wrap.className='zhuyin-wrap';
+      const base=document.createElement('span');base.className='zhuyin-base';base.textContent=ch;
+      const reading=document.createElement('span');reading.className='zhuyin-reading';reading.textContent=symbols;
+      wrap.append(base,reading);
+      if(tone){const t=document.createElement('span');t.className='zhuyin-tone';t.textContent=tone;wrap.appendChild(t)}
+      frag.appendChild(wrap);
+    });
+    node.parentNode.replaceChild(frag,node);
+  }
+  function scan(root){
+    if(!root)return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){
+      const p=n.parentElement;
+      if(!p || p.closest('.zhuyin-wrap,script,style,textarea,input,select,option,noscript'))return NodeFilter.FILTER_REJECT;
+      return /[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff]/.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+    }});
+    const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(decorateTextNode);
+  }
+  function boot(){
+    if(!window.pinyinPro){setTimeout(boot,250);return}
+    scan(document.body);
+    const observer=new MutationObserver(records=>records.forEach(rec=>{
+      rec.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE)decorateTextNode(n);else if(n.nodeType===Node.ELEMENT_NODE)scan(n)});
+    }));
+    observer.observe(document.body,{childList:true,subtree:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+
+</body></html>
