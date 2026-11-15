@@ -28,13 +28,13 @@ p{line-height:2.05}
 .feedback{font-size:1.04rem;line-height:2.05;padding:18px}
 .zhuyin-wrap{display:inline-flex;align-items:center;vertical-align:middle;white-space:nowrap;gap:2px;margin:0 .035em}
 .zhuyin-base{display:inline-block;font-size:1.12em;line-height:1.55;font-weight:500;color:#263449}
-.zhuyin-reading{display:inline-flex;align-items:center;position:relative;writing-mode:vertical-rl;text-orientation:upright;font-size:.58em;line-height:1.12;letter-spacing:0;min-height:2.35em;color:#55418f;font-weight:600}
+.zhuyin-reading{display:inline-flex;align-items:center;position:relative;writing-mode:vertical-rl;text-orientation:upright;font-size:.48em;line-height:1.12;letter-spacing:0;min-height:2.1em;color:#55418f;font-weight:600}
 .zhuyin-tone{font-family:serif;font-size:.86em;line-height:1;writing-mode:horizontal-tb;align-self:flex-start;margin-left:-.05em;color:#55418f;font-weight:700}
 .zhuyin-wrap ruby,.zhuyin-wrap rt{display:none}
 @media(max-width:600px){
  body{font-size:17px;line-height:1.9}
  .zhuyin-base{font-size:1.08em}
- .zhuyin-reading{font-size:.55em;min-height:2.2em}
+ .zhuyin-reading{font-size:.46em;min-height:2em}
  .choice{font-size:1rem;line-height:2.1;padding:16px}
 }
 </style>
@@ -118,7 +118,11 @@ function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){al
     const chars=Array.from(text), frag=document.createDocumentFragment();
     chars.forEach((ch,i)=>{
       if(!isHan.test(ch)){frag.appendChild(document.createTextNode(ch));return}
-      const zh=toZhuyin(syllables[i]||'');
+      // 台灣常用讀音校正：詞語「獅子」的「子」讀輕聲；「誰」讀 ㄕㄟˊ。
+      let pinyin=syllables[i]||'';
+      if(ch==='子' && chars[i-1]==='獅') pinyin='zi5';
+      if(ch==='誰') pinyin='shei2';
+      const zh=toZhuyin(pinyin);
       if(!zh){frag.appendChild(document.createTextNode(ch));return}
       const toneMatch=zh.match(/[ˊˇˋ]$/), neutral=zh.startsWith('˙');
       const tone=toneMatch?toneMatch[0]:(neutral?'˙':'');
