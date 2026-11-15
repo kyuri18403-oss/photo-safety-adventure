@@ -33,7 +33,7 @@ input,select{font:inherit;border:2px solid #e4e7ec;border-radius:12px;padding:10
 <div class="mascot">🦊 🐰 🐻</div><h2>歡迎加入照片守護隊！</h2>
 <p>網路世界很好玩，但照片和個人資料也需要好好保護。遇到讓你不舒服的事，記得：<b>不是你的錯，可以拒絕，也可以求助。</b></p>
 <label>選擇你的探險角色：</label><br><select id="role"><option>小小探險家</option><option>男孩</option><option>女孩</option><option>其他</option><option>不想選擇</option></select>
-<p><button class="primary" onclick="startGame()">開始探險！ 🚀</button></p>
+<p><button class="primary" onclick="window.startGame()">開始探險！ 🚀</button></p>
 </section>
 <section class="card hidden" id="game">
 <div class="top"><span class="tag" id="levelTag">第 1 關</span><span class="small" id="score">答對 0 關</span></div>
@@ -60,6 +60,7 @@ const levels=[
 let idx=0,correct=0,answered=false,history=[];
 function $(id){return document.getElementById(id)}
 function startGame(){idx=0;correct=0;history=[];$('welcome').classList.add('hidden');$('finish').classList.add('hidden');$('game').classList.remove('hidden');render()}
+window.startGame=startGame;
 function render(){answered=false;const x=levels[idx];$('stagePill').textContent='探險進行中';$('levelTag').textContent='第 '+(idx+1)+' 關／共 8 關';$('score').textContent='答對 '+correct+' 關';$('bar').style.width=(idx/8*100)+'%';$('qtitle').textContent=x.title;$('scene').textContent=x.scene;$('story').textContent=x.story;$('choices').innerHTML='';$('feedback').classList.add('hidden');$('next').classList.add('hidden');x.choices.forEach((c,i)=>{const b=document.createElement('button');b.className='choice';b.textContent=['A','B','C'][i]+'　'+c;b.onclick=()=>answer(i);$('choices').appendChild(b)})}
 function answer(n){if(answered)return;answered=true;const x=levels[idx],ok=n===x.a;if(ok)correct++;history.push({level:idx+1,choice:n,correct:ok,topic:x.tip});$('score').textContent='答對 '+correct+' 關';$('bar').style.width=((idx+1)/8*100)+'%';$('feedback').innerHTML='<b>'+(ok?'🌟 太棒了！':'💛 再想一想')+'</b><br>'+(ok?x.good:x.bad)+'<br><span class="tag">安全提醒：'+x.tip+'</span>';$('feedback').classList.remove('hidden');$('next').classList.remove('hidden');$('next').textContent=idx===7?'查看探險成果 🏆':'下一關 ➜';[...$('choices').children].forEach(b=>b.disabled=true)}
 function nextLevel(){if(idx<7){idx++;render()}else finish()}
