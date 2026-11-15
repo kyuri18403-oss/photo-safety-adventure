@@ -91,7 +91,7 @@ function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){al
     for(const [k,v] of initials){if(p.startsWith(k)){ini=v;p=p.slice(k.length);break}}
     if(['ㄐ','ㄑ','ㄒ'].includes(ini)&&p.startsWith('u'))p='ü'+p.slice(1);
     if(['ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'].includes(ini)&&p==='i')p='';
-    const fin=finals[p];
+    const fin=p===''?'':finals[p];
     if(fin===undefined)return '';
     return tone==='˙'?'˙'+ini+fin:ini+fin+tone;
   }
