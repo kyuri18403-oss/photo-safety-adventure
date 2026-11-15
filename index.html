@@ -79,6 +79,7 @@ function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){al
   function toZhuyin(s){
     if(!s || !/[a-zü]/i.test(s)) return '';
     let tone='', p=s.toLowerCase();
+    const numericTone=p.match(/[0-5]$/); if(numericTone){const n=Number(numericTone[0]);p=p.slice(0,-1);tone=n===2?'ˊ':n===3?'ˇ':n===4?'ˋ':(n===0||n===5)?'˙':'';}
     const marks={'ā':'a','á':'a','ǎ':'a','à':'a','ē':'e','é':'e','ě':'e','è':'e','ī':'i','í':'i','ǐ':'i','ì':'i','ō':'o','ó':'o','ǒ':'o','ò':'o','ū':'u','ú':'u','ǔ':'u','ù':'u','ǖ':'ü','ǘ':'ü','ǚ':'ü','ǜ':'ü'};
     const toneMarks={'ā':'','ē':'','ī':'','ō':'','ū':'','ǖ':'','á':'ˊ','é':'ˊ','í':'ˊ','ó':'ˊ','ú':'ˊ','ǘ':'ˊ','ǎ':'ˇ','ě':'ˇ','ǐ':'ˇ','ǒ':'ˇ','ǔ':'ˇ','ǚ':'ˇ','à':'ˋ','è':'ˋ','ì':'ˋ','ò':'ˋ','ù':'ˋ','ǜ':'ˋ'};
     for(const c of p){if(toneMarks[c]!==undefined){tone=toneMarks[c];break}}
@@ -100,7 +101,7 @@ function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){al
     const api=window.pinyinPro;
     if(!api || typeof api.pinyin!=='function')return;
     let syllables;
-    try{syllables=api.pinyin(text,{type:'array',toneType:'symbol',toneSandhi:true,traditional:true})}catch(e){return}
+    try{syllables=api.pinyin(text,{type:'array',toneType:'num',toneSandhi:true,traditional:true})}catch(e){return}
     const chars=Array.from(text), frag=document.createDocumentFragment();
     chars.forEach((ch,i)=>{
       if(!isHan.test(ch)){frag.appendChild(document.createTextNode(ch));return}
