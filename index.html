@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fff3d8">
+<title>網路探險隊：照片守護大作戰</title>
+<style>
+:root{--ink:#344054;--pink:#ff9fba;--blue:#8bd5f5;--yellow:#ffe18a;--green:#a8dfb0;--purple:#c9b4f5;--paper:#fffdf7}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fff5df,#f1f8ff);font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;color:var(--ink)}
+main{max-width:920px;margin:auto;padding:18px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font-size:clamp(1.55rem,4vw,2.4rem);margin:.25em 0;color:#65529a}.sub{color:#667085}.pill{background:white;border-radius:99px;padding:8px 13px;box-shadow:0 3px 12px #39415012}
+.card{background:#ffffffed;border:3px solid #fff;border-radius:26px;padding:clamp(18px,4vw,30px);box-shadow:0 12px 30px #5b66801a;margin:16px 0}
+.hero{text-align:center;background:linear-gradient(120deg,#fff0f5,#eef9ff)}.mascot{font-size:64px;animation:bob 2s infinite ease-in-out}@keyframes bob{50%{transform:translateY(-9px)}}
+button{border:0;border-radius:16px;padding:13px 18px;font-size:1rem;font-weight:700;color:#344054;background:var(--yellow);cursor:pointer;box-shadow:0 4px 0 #e8c96f;margin:5px}button:hover{filter:brightness(.98);transform:translateY(-1px)}button:focus-visible{outline:3px solid #65529a;outline-offset:3px}.primary{background:#b9e8fb;box-shadow:0 4px 0 #79c4e6}.soft{background:#f1eaff;box-shadow:0 4px 0 #c4b0e8}.danger{background:#ffd7df;box-shadow:0 4px 0 #efa9b9}
+input,select{font:inherit;border:2px solid #e4e7ec;border-radius:12px;padding:10px;margin:5px;max-width:100%}
+.progress{height:13px;background:#edf0f5;border-radius:99px;overflow:hidden;margin:14px 0}.progress span{display:block;height:100%;background:linear-gradient(90deg,#ffabc4,#8bd5f5);width:0;transition:width .3s}
+.choice{display:block;width:100%;text-align:left;background:#f7f7ff;box-shadow:none;border:2px solid #e8e5fa;margin:10px 0;padding:16px;line-height:1.55}.choice:hover{background:#eff8ff;border-color:#9edcf4}
+.feedback{border-radius:18px;padding:16px;background:#f0faef;margin-top:14px;line-height:1.7}.hidden{display:none!important}.tag{display:inline-block;background:#fff0c7;border-radius:9px;padding:4px 9px;font-size:.88rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.stat{background:#f6f4ff;padding:14px;border-radius:16px}.small{font-size:.9rem;color:#667085}.bopomofo{display:inline-block;writing-mode:vertical-rl;line-height:1.6;letter-spacing:.06em;background:#fff8df;border-radius:12px;padding:7px;margin:3px}.footer{text-align:center;color:#98a2b3;font-size:.82rem;padding:20px}
+</style>
+</head>
+<body><main>
+<div class="top"><div><div class="tag">🛡️ 數位安全小學堂</div><h1>🐾 網路探險隊：照片守護大作戰</h1><div class="sub">一起練習保護照片、尊重彼此，成為網路安全小尖兵！</div></div><div class="pill" id="stagePill">準備出發</div></div>
+<section class="card hero" id="welcome">
+<div class="mascot">🦊 🐰 🐻</div><h2>歡迎加入照片守護隊！</h2>
+<p>網路世界很好玩，但照片和個人資料也需要好好保護。遇到讓你不舒服的事，記得：<b>不是你的錯，可以拒絕，也可以求助。</b></p>
+<label>選擇你的探險角色：</label><br><select id="role"><option>小小探險家</option><option>男孩</option><option>女孩</option><option>其他</option><option>不想選擇</option></select>
+<p><button class="primary" onclick="startGame()">開始探險！ 🚀</button></p>
+</section>
+<section class="card hidden" id="game">
+<div class="top"><span class="tag" id="levelTag">第 1 關</span><span class="small" id="score">答對 0 關</span></div>
+<div class="progress"><span id="bar"></span></div>
+<h2 id="qtitle"></h2><div class="mascot" id="scene">🦊</div><p id="story"></p><h3>你會怎麼做呢？</h3><div id="choices"></div>
+<div id="feedback" class="feedback hidden" aria-live="polite"></div>
+<div class="top"><button class="soft" onclick="readQuestion()">🔊 聽一聽</button><button class="primary hidden" id="next" onclick="nextLevel()">下一關 ➜</button></div>
+</section>
+<section class="card hidden" id="finish"><div class="mascot">🏆🌟</div><h2>探險完成！你是照片守護小英雄！</h2><p id="finishText"></p><div class="grid" id="resultGrid"></div><p><button class="primary" onclick="restart()">再玩一次</button><button class="soft" onclick="showTeacher()">教師統計</button></p></section>
+<section class="card hidden" id="teacher"><h2>📊 教師端學習紀錄</h2><p class="small">此統計只保存在目前這個瀏覽器工作階段；重新整理或換裝置後不會自動合併。請勿輸入學生個資。</p><div id="teacherStats" class="grid"></div><p><button class="primary" onclick="downloadCSV()">下載匿名紀錄 CSV</button><button class="soft" onclick="hideTeacher()">返回</button></p></section>
+<div class="footer">🌱 勇敢說不、保護隱私、找可信任的大人幫忙。你值得被尊重與保護。</div>
+</main>
+<script>
+const levels=[
+{title:"陌生網友的邀請",scene:"🐰💬",story:"兔兔在遊戲聊天室認識一位陌生網友。對方說：「我們當好朋友吧！加我的私人帳號，我們單獨聊天。」",q:"哪一個做法比較安全？",choices:["立刻加好友，把自己的學校和電話告訴他","不提供個人資料；如果不確定，就先和信任的大人討論","為了當朋友，什麼問題都回答"],a:1,good:"答對了！網路上的人不一定和他說的一樣。先不提供姓名、學校、電話、住址等資料，並找可信任的大人討論。",bad:"陌生網友不一定可信。先不要提供個人資料，也可以封鎖或向大人求助。",tip:"個人資料要保密"},
+{title:"照片可以傳給誰？",scene:"🦊📷",story:"狐狸收到訊息：「傳一張只有我能看的照片給我吧！不要告訴別人。」",q:"你會怎麼提醒狐狸？",choices:["只要對方說保密，就可以傳","先停下來，不傳讓自己不舒服或可能暴露隱私的照片，告訴信任的大人","請對方保證不轉傳就好"],a:1,good:"很棒！照片一旦傳出，就可能被保存或轉傳。你有權決定不傳，也不需要為拒絕感到抱歉。",bad:"口頭保證不能確保照片安全。任何讓你不舒服的照片要求，都可以拒絕並求助。",tip:"照片隱私由自己作主"},
+{title:"秘密邀約",scene:"🐻🎁",story:"小熊收到訊息：「我送你遊戲點數，放學後來找我，不要告訴老師和家人喔！」",q:"遇到這種要求，哪個選擇最安全？",choices:["偷偷去赴約","先不答應、不單獨赴約，把訊息告訴可信任的大人","先收下點數，再看看"],a:1,good:"正確！要求保密、送禮物並邀請單獨見面，是需要提高警覺的訊號。不要獨自赴約。",bad:"不必因為禮物或秘密而答應邀約。先停止聯絡，找可信任的大人一起處理。",tip:"不單獨赴陌生邀約"},
+{title:"AI 變造照片",scene:"🦝🖼️",story:"浣熊發現有人用 AI 把他的普通照片改成奇怪、讓他難過的樣子，還傳給同學看。",q:"這時候最重要的是什麼？",choices:["被改圖的人一定做錯了事","不要責怪浣熊；保留相關證據並找大人協助處理","大家一起轉傳，找出更多版本"],a:1,good:"答對！未經同意變造或散布影像可能傷害他人。責任在製作、散布的人，不是受害者。",bad:"被變造照片不是當事人的錯。不要轉傳，保留證據並找可信任的大人協助。",tip:"AI 影像也要尊重同意"},
+{title:"用照片威脅",scene:"🐼📱",story:"熊貓收到訊息：「如果你不照我說的做，我就把你的照片傳出去！」熊貓很害怕。",q:"熊貓應該怎麼辦？",choices:["照對方要求做，讓事情快點結束","自己想辦法，不告訴任何人","不要再照要求做；保存訊息，封鎖並立刻找可信任的大人協助"],a:2,good:"非常好！威脅不是你的錯。不要獨自承受，保留訊息等證據，找家長、老師或其他可信任的大人協助。",bad:"不要因威脅而繼續配合。先確保安全、保留證據，立即向可信任的大人求助。",tip:"遇到威脅要立即求助"},
+{title:"同學請你轉傳",scene:"🐱📨",story:"同學傳來一張別人的私密照片，說：「快轉給大家看，很好笑！」",q:"你可以怎麼做？",choices:["轉傳到班級群組","不下載、不轉傳、不嘲笑，提醒同學停止散布並告訴老師","傳給一位最好的朋友就好"],a:1,good:"做得好！不轉傳就是保護。即使不是自己拍的，也不能任意散布別人的影像。",bad:"轉傳會讓傷害擴大。不要保存或散布，請老師或可信任的大人協助。",tip:"不轉傳、不起鬨"},
+{title:"練習勇敢拒絕",scene:"🦁🛑",story:"有人一直要求獅子傳照片。獅子覺得不舒服，但擔心拒絕會被討厭。",q:"哪一句話最能表達界線？",choices:["「我不想傳，請不要再要求我。」然後離開對話並求助","「好吧，只傳一次。」","「我是不是太小題大作了？」"],a:0,good:"很棒！你可以清楚說不。即使對方不高興，你的界線仍然重要。若對方持續騷擾，請找大人幫忙。",bad:"你不需要勉強自己。可以直接拒絕、停止對話，並告訴可信任的大人。",tip:"拒絕是你的權利"},
+{title:"找到安全守護隊",scene:"🦉💗",story:"小鳥遇到網路上的不舒服訊息，不知道該找誰幫忙。",q:"哪些人可以成為可信任的求助對象？",choices:["家長、老師、輔導老師或其他可信任的大人","只找網路上的陌生人","誰都不說，自己忍耐"],a:0,good:"答對！求助不是告狀，也不是你的錯。可以找家長、老師、輔導老師等可信任的大人一起處理。",bad:"不要獨自忍耐。找身邊可信任的大人陪你處理，必要時也可請大人協助通報。",tip:"求助讓安全多一份力量"}
+];
+let idx=0,correct=0,answered=false,history=[];
+function $(id){return document.getElementById(id)}
+function startGame(){idx=0;correct=0;history=[];$('welcome').classList.add('hidden');$('finish').classList.add('hidden');$('game').classList.remove('hidden');render()}
+function render(){answered=false;const x=levels[idx];$('stagePill').textContent='探險進行中';$('levelTag').textContent='第 '+(idx+1)+' 關／共 8 關';$('score').textContent='答對 '+correct+' 關';$('bar').style.width=(idx/8*100)+'%';$('qtitle').textContent=x.title;$('scene').textContent=x.scene;$('story').textContent=x.story;$('choices').innerHTML='';$('feedback').classList.add('hidden');$('next').classList.add('hidden');x.choices.forEach((c,i)=>{const b=document.createElement('button');b.className='choice';b.textContent=['A','B','C'][i]+'　'+c;b.onclick=()=>answer(i);$('choices').appendChild(b)})}
+function answer(n){if(answered)return;answered=true;const x=levels[idx],ok=n===x.a;if(ok)correct++;history.push({level:idx+1,choice:n,correct:ok,topic:x.tip});$('score').textContent='答對 '+correct+' 關';$('bar').style.width=((idx+1)/8*100)+'%';$('feedback').innerHTML='<b>'+(ok?'🌟 太棒了！':'💛 再想一想')+'</b><br>'+(ok?x.good:x.bad)+'<br><span class="tag">安全提醒：'+x.tip+'</span>';$('feedback').classList.remove('hidden');$('next').classList.remove('hidden');$('next').textContent=idx===7?'查看探險成果 🏆':'下一關 ➜';[...$('choices').children].forEach(b=>b.disabled=true)}
+function nextLevel(){if(idx<7){idx++;render()}else finish()}
+function finish(){$('game').classList.add('hidden');$('finish').classList.remove('hidden');$('stagePill').textContent='任務完成';$('finishText').textContent='你答對 '+correct+'／8 關。記住：保護隱私、尊重影像、拒絕不舒服的要求，遇到問題就找可信任的大人。';$('resultGrid').innerHTML=history.map(h=>'<div class="stat"><b>第 '+h.level+' 關</b><br>'+(h.correct?'✅ 答對':'💡 再練習')+'<br><span class="small">'+h.topic+'</span></div>').join('')}
+function restart(){$('finish').classList.add('hidden');$('welcome').classList.remove('hidden');$('stagePill').textContent='準備出發'}
+function showTeacher(){$('finish').classList.add('hidden');$('teacher').classList.remove('hidden');$('teacherStats').innerHTML='<div class="stat"><b>完成關卡</b><h2>'+history.length+'/8</h2></div><div class="stat"><b>答對關卡</b><h2>'+correct+'</h2></div><div class="stat"><b>需再練習</b><h2>'+(history.length-correct)+'</h2></div><div class="stat"><b>探險角色</b><h2>'+$('role').value+'</h2></div>'}
+function hideTeacher(){$('teacher').classList.add('hidden');$('finish').classList.remove('hidden')}
+function downloadCSV(){const rows=[['關卡','選擇題序','結果','安全主題'],...history.map(h=>[h.level,h.choice+1,h.correct?'答對':'再練習',h.topic])];const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='照片守護大作戰_匿名學習紀錄.csv';a.click();URL.revokeObjectURL(a.href)}
+function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){alert('此瀏覽器目前不支援語音播放');return}speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(x.title+'。'+x.story+'。'+x.q))}
+</script></body></html>
