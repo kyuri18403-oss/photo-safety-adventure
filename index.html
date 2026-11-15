@@ -73,7 +73,7 @@ function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){al
 <script src="https://unpkg.com/pinyin-pro@3.29.5/dist/index.js"></script>
 <script>
 (function(){
-  const isHan = /^[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff]$/;
+  const isHan = /^[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]$/;
   const initials = [['zh','ㄓ'],['ch','ㄔ'],['sh','ㄕ'],['b','ㄅ'],['p','ㄆ'],['m','ㄇ'],['f','ㄈ'],['d','ㄉ'],['t','ㄊ'],['n','ㄋ'],['l','ㄌ'],['g','ㄍ'],['k','ㄎ'],['h','ㄏ'],['j','ㄐ'],['q','ㄑ'],['x','ㄒ'],['r','ㄖ'],['z','ㄗ'],['c','ㄘ'],['s','ㄙ']];
   const finals={a:'ㄚ',o:'ㄛ',e:'ㄜ',ê:'ㄝ',ai:'ㄞ',ei:'ㄟ',ao:'ㄠ',ou:'ㄡ',an:'ㄢ',en:'ㄣ',ang:'ㄤ',eng:'ㄥ',er:'ㄦ',i:'ㄧ',ia:'ㄧㄚ',ie:'ㄧㄝ',iao:'ㄧㄠ',iu:'ㄧㄡ',ian:'ㄧㄢ',in:'ㄧㄣ',iang:'ㄧㄤ',ing:'ㄧㄥ',iong:'ㄩㄥ',u:'ㄨ',ua:'ㄨㄚ',uo:'ㄨㄛ',uai:'ㄨㄞ',ui:'ㄨㄟ',uan:'ㄨㄢ',un:'ㄨㄣ',uang:'ㄨㄤ',ong:'ㄨㄥ','ü':'ㄩ','üe':'ㄩㄝ','üan':'ㄩㄢ','ün':'ㄩㄣ'};
   function toZhuyin(s){
@@ -97,7 +97,7 @@ function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){al
   }
   function decorateTextNode(node){
     const text=node.nodeValue;
-    if(!text || !/[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff]/.test(text))return;
+    if(!text || !/[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/.test(text))return;
     const api=window.pinyinPro;
     if(!api || typeof api.pinyin!=='function')return;
     let syllables;
@@ -124,7 +124,7 @@ function readQuestion(){const x=levels[idx];if(!('speechSynthesis'in window)){al
     const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){
       const p=n.parentElement;
       if(!p || p.closest('.zhuyin-wrap,script,style,textarea,input,select,option,noscript'))return NodeFilter.FILTER_REJECT;
-      return /[\\u3400-\\u4dbf\\u4e00-\\u9fff\\uf900-\\ufaff]/.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+      return /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
     }});
     const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
     nodes.forEach(decorateTextNode);
