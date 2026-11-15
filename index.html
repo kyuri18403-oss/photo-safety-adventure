@@ -19,12 +19,24 @@ input,select{font:inherit;border:2px solid #e4e7ec;border-radius:12px;padding:10
 </style>
 <style>
 /* 逐字注音：字在左、直式注音在右，聲調獨立靠右 */
-.zhuyin-wrap{display:inline-flex;align-items:center;vertical-align:middle;white-space:nowrap;gap:1px;margin:0 .015em}
-.zhuyin-base{display:inline-block;line-height:1.25}
-.zhuyin-reading{display:inline-flex;align-items:center;position:relative;writing-mode:vertical-rl;text-orientation:upright;font-size:.48em;line-height:1;letter-spacing:0;min-height:2.2em;color:#65529a}
-.zhuyin-tone{font-family:serif;font-size:.78em;line-height:1;writing-mode:horizontal-tb;align-self:flex-start;margin-left:-.1em;color:#65529a}
+/* 國字優先、注音清楚但不搶主體；直式注音置於國字右側 */
+body{font-size:18px;line-height:1.85}
+h1,h2,h3{line-height:1.65}
+p{line-height:2.05}
+.card{padding:clamp(20px,4.5vw,34px)}
+.choice{font-size:1.08rem;line-height:2.05;padding:17px 18px}
+.feedback{font-size:1.04rem;line-height:2.05;padding:18px}
+.zhuyin-wrap{display:inline-flex;align-items:center;vertical-align:middle;white-space:nowrap;gap:2px;margin:0 .035em}
+.zhuyin-base{display:inline-block;font-size:1.12em;line-height:1.55;font-weight:500;color:#263449}
+.zhuyin-reading{display:inline-flex;align-items:center;position:relative;writing-mode:vertical-rl;text-orientation:upright;font-size:.58em;line-height:1.12;letter-spacing:0;min-height:2.35em;color:#55418f;font-weight:600}
+.zhuyin-tone{font-family:serif;font-size:.86em;line-height:1;writing-mode:horizontal-tb;align-self:flex-start;margin-left:-.05em;color:#55418f;font-weight:700}
 .zhuyin-wrap ruby,.zhuyin-wrap rt{display:none}
-@media(max-width:600px){.zhuyin-reading{font-size:.44em;min-height:2em}}
+@media(max-width:600px){
+ body{font-size:17px;line-height:1.9}
+ .zhuyin-base{font-size:1.08em}
+ .zhuyin-reading{font-size:.55em;min-height:2.2em}
+ .choice{font-size:1rem;line-height:2.1;padding:16px}
+}
 </style>
 </head>
 <body><main>
